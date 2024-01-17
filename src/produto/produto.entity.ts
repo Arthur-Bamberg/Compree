@@ -1,59 +1,45 @@
-import { Type } from 'class-transformer';
 import {
-  ArrayMinSize,
-  IsArray,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-  IsUUID,
-  MaxLength,
-  Min,
-  ValidateNested,
-} from 'class-validator';
-import {
-  CaracteristicaProdutoDTO,
-  ImagemProdutoDTO,
-} from './dto/CriaProduto.dto';
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
+@Entity({ name: 'produtos' })
 export class ProdutoEntity {
-  @IsUUID(undefined, { message: 'ID de produto inválido' })
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @IsUUID(undefined, { message: 'ID de usuário inválido' })
+  @Column({ name: 'usuario_id', length: 100, nullable: false })
   usuarioId: string;
 
-  @IsString()
-  @IsNotEmpty({ message: 'Nome do produto não pode ser vazio' })
+  @Column({ name: 'nome', length: 100, nullable: false })
   nome: string;
 
-  @IsNumber({ maxDecimalPlaces: 2, allowNaN: false, allowInfinity: false })
-  @Min(1, { message: 'O valor precisa ser maior que zero' })
+  @Column({ name: 'valor', nullable: false })
   valor: number;
 
-  @IsNumber()
-  @Min(0, { message: 'Quantidade mínima inválida' })
+  @Column({ name: 'quantidade', nullable: false })
   quantidade: number;
 
-  @IsString()
-  @IsNotEmpty({ message: 'Descrição do produto não pode ser vazia ' })
-  @MaxLength(1000, {
-    message: 'Descrição não pode ter mais que 1000 caracteres',
-  })
+  @Column({ name: 'descricao', length: 255, nullable: false })
   descricao: string;
 
-  @ValidateNested()
-  @IsArray()
-  @ArrayMinSize(3)
-  @Type(() => CaracteristicaProdutoDTO)
-  caracteristicas: CaracteristicaProdutoDTO[];
-
-  @ValidateNested()
-  @IsArray()
-  @ArrayMinSize(1)
-  @Type(() => ImagemProdutoDTO)
-  imagens: ImagemProdutoDTO[];
-
-  @IsString()
-  @IsNotEmpty({ message: 'Categoria do produto não pode ser vazia' })
+  @Column({ name: 'categoria', length: 100, nullable: false })
   categoria: string;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: string;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: string;
+
+  @DeleteDateColumn({ name: 'deleted_at' })
+  deletedAt: string;
+
+  // caracteristicas: CaracteristicaProduto[];
+
+  // imagens: ImagemProduto[];
 }
