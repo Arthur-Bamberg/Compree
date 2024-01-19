@@ -7,15 +7,15 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ProdutoRepository } from './produto.repository';
 import { CriaProdutoDTO } from './dto/CriaProduto.dto';
 import { v4 as uuid } from 'uuid';
 import { ProdutoEntity } from './produto.entity';
 import { AtualizaProdutoDTO } from './dto/AtualizaProduto.dto';
+import { ProdutoService } from './produto.service';
 
 @Controller('/produtos')
 export class ProdutoController {
-  constructor(private produtoRepository: ProdutoRepository) {}
+  constructor(private readonly produtoService: ProdutoService) {}
 
   @Post()
   async criaProduto(@Body() dadosProduto: CriaProdutoDTO) {
@@ -31,13 +31,13 @@ export class ProdutoController {
     // produto.caracteristicas = dadosProduto.caracteristicas;
     // produto.imagens = dadosProduto.imagens;
 
-    this.produtoRepository.salvar(produto);
+    this.produtoService.criaProduto(produto);
     return produto;
   }
 
   @Get()
   async listaProdutos() {
-    return this.produtoRepository.listaProdutos();
+    return this.produtoService.listaProdutos();
   }
 
   @Put('/:id')
@@ -45,13 +45,17 @@ export class ProdutoController {
     @Param('id') id: string,
     @Body() novosDados: AtualizaProdutoDTO,
   ) {
-    return this.produtoRepository.atualiza(id, novosDados);
+    await this.produtoService.atualizaProduto(id, novosDados);
+
+    return {
+      mensagem: 'Produto atualizado com sucesso!',
+    };
   }
 
   @Delete('/:id')
   async removeProduto(@Param('id') id: string) {
+    await this.produtoService.deletaProduto(id);
     return {
-      produto: await this.produtoRepository.remove(id),
       mensagem: 'Produto removido com sucesso!',
     };
   }

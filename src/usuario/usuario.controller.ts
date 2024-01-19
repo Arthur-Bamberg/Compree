@@ -50,23 +50,18 @@ export class UsuarioController {
     @Param('id') id: string,
     @Body() novosDados: AtualizaUsuarioDTO,
   ) {
-    const usuarioAtualizado = await this.usuarioService.atualizaUsuario(
-      id,
-      novosDados,
-    );
+    await this.usuarioService.atualizaUsuario(id, novosDados);
 
     return {
-      usuario: usuarioAtualizado,
       mensagem: 'Usuário atualizado com sucesso!',
     };
   }
 
   @Delete('/:id')
   async removeUsuario(@Param('id') id: string) {
-    const usuario = await this.usuarioService.deletaUsuario(id);
+    await this.usuarioService.deletaUsuario(id);
 
     return {
-      usuario,
       mensagem: 'Usuário removido com sucesso!',
     };
   }

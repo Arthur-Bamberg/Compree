@@ -40,19 +40,19 @@ export class AtualizaProdutoDTO {
   @IsOptional()
   descricao: string;
 
-  @ValidateNested()
-  @IsArray()
-  @ArrayMinSize(3)
-  @Type(() => CaracteristicaProdutoDTO)
-  @IsOptional()
-  caracteristicas: CaracteristicaProdutoDTO[];
+  // @ValidateNested()
+  // @IsArray()
+  // @ArrayMinSize(3)
+  // @Type(() => CaracteristicaProdutoDTO)
+  // @IsOptional()
+  // caracteristicas: CaracteristicaProdutoDTO[];
 
-  @ValidateNested()
-  @IsArray()
-  @ArrayMinSize(1)
-  @Type(() => ImagemProdutoDTO)
-  @IsOptional()
-  imagens: ImagemProdutoDTO[];
+  // @ValidateNested()
+  // @IsArray()
+  // @ArrayMinSize(1)
+  // @Type(() => ImagemProdutoDTO)
+  // @IsOptional()
+  // imagens: ImagemProdutoDTO[];
 
   @IsString()
   @IsNotEmpty({ message: 'Categoria do produto não pode ser vazia' })
