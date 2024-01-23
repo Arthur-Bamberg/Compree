@@ -7,7 +7,6 @@ import {
   IsOptional,
   IsString,
   IsUUID,
-  MaxLength,
   Min,
   ValidateNested,
 } from 'class-validator';
@@ -23,6 +22,7 @@ export class AtualizaProdutoDTO {
   nome: string;
 
   @IsNumber({ maxDecimalPlaces: 2, allowNaN: false, allowInfinity: false })
+  @IsOptional()
   @Min(1, { message: 'O valor precisa ser maior que zero' })
   @IsOptional()
   valor: number;
@@ -30,29 +30,25 @@ export class AtualizaProdutoDTO {
   @IsNumber()
   @Min(0, { message: 'Quantidade mínima inválida' })
   @IsOptional()
-  quantidade: number;
+  quantidadeDisponivel: number;
 
   @IsString()
-  @IsNotEmpty({ message: 'Descrição do produto não pode ser vazia ' })
-  @MaxLength(1000, {
-    message: 'Descrição não pode ter mais que 1000 caracteres',
-  })
   @IsOptional()
   descricao: string;
 
-  // @ValidateNested()
-  // @IsArray()
-  // @ArrayMinSize(3)
-  // @Type(() => CaracteristicaProdutoDTO)
-  // @IsOptional()
-  // caracteristicas: CaracteristicaProdutoDTO[];
+  @ValidateNested()
+  @IsArray()
+  @ArrayMinSize(1)
+  @Type(() => CaracteristicaProdutoDTO)
+  @IsOptional()
+  caracteristicas: CaracteristicaProdutoDTO[];
 
-  // @ValidateNested()
-  // @IsArray()
-  // @ArrayMinSize(1)
-  // @Type(() => ImagemProdutoDTO)
-  // @IsOptional()
-  // imagens: ImagemProdutoDTO[];
+  @ValidateNested()
+  @IsArray()
+  @ArrayMinSize(1)
+  @Type(() => ImagemProdutoDTO)
+  @IsOptional()
+  imagens: ImagemProdutoDTO[];
 
   @IsString()
   @IsNotEmpty({ message: 'Categoria do produto não pode ser vazia' })

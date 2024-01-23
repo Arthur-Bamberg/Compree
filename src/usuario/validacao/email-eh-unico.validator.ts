@@ -1,25 +1,26 @@
+import { Injectable } from '@nestjs/common';
 import {
+  registerDecorator,
   ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
-  registerDecorator,
 } from 'class-validator';
-import { UsuarioRepository } from '../usuario.repository';
-import { Injectable } from '@nestjs/common';
+import { UsuarioService } from '../usuario.service';
 
 @Injectable()
 @ValidatorConstraint({ async: true })
 export class EmailEhUnicoValidator implements ValidatorConstraintInterface {
-  constructor(private usuarioRepository: UsuarioRepository) {}
+  constructor(private usuarioService: UsuarioService) {}
 
-  async validate(email: string): Promise<boolean> {
-    const usuarioComEmailExiste =
-      await this.usuarioRepository.existeComEmail(email);
+  async validate(value: any): Promise<boolean> {
+    const usuarioComEmailExiste = await this.usuarioService.buscaPorEmail(
+      value,
+    );
     return !usuarioComEmailExiste;
   }
 }
 
-export const emailEhUnico = (opcoesDeValidacao: ValidationOptions) => {
+export const EmailEhUnico = (opcoesDeValidacao: ValidationOptions) => {
   return (objeto: object, propriedade: string) => {
     registerDecorator({
       target: objeto.constructor,

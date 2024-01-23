@@ -5,8 +5,8 @@ import {
   IsNotEmpty,
   IsNumber,
   IsString,
-  IsUUID,
   IsUrl,
+  IsUUID,
   MaxLength,
   Min,
   ValidateNested,
@@ -54,7 +54,7 @@ export class CriaProdutoDTO {
 
   @IsNumber()
   @Min(0, { message: 'Quantidade mínima inválida' })
-  quantidade: number;
+  quantidadeDisponivel: number;
 
   @IsString()
   @IsNotEmpty({ message: 'Descrição do produto não pode ser vazia ' })
@@ -65,7 +65,7 @@ export class CriaProdutoDTO {
 
   @ValidateNested()
   @IsArray()
-  @ArrayMinSize(3)
+  @ArrayMinSize(1)
   @Type(() => CaracteristicaProdutoDTO)
   caracteristicas: CaracteristicaProdutoDTO[];
 
