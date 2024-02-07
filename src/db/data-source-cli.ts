@@ -1,6 +1,8 @@
 import 'dotenv/config';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
+// Para rodar as migrations utilize o node 17 do mvn
+
 const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
   host: process.env.DB_HOST,
