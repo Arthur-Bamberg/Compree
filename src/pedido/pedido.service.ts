@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PedidoEntity } from './pedido.entity';
 import { In, Repository } from 'typeorm';
@@ -20,8 +20,19 @@ export class PedidoService {
     private readonly produtoRepository: Repository<ProdutoEntity>,
   ) {}
 
-  async cadastraPedido(usuarioId: string, dadosDoPedido: CriaPedidoDto) {
+  private async buscaUsuario(usuarioId: string) {
     const usuario = await this.usuarioRepository.findOneBy({ id: usuarioId });
+
+    if (usuario === null) {
+      throw new NotFoundException('Usuário não encontrado');
+    }
+
+    return usuario;
+  }
+
+  async cadastraPedido(usuarioId: string, dadosDoPedido: CriaPedidoDto) {
+    const usuario = await this.buscaUsuario(usuarioId);
+
     const pedido = new PedidoEntity();
 
     pedido.status = StatusPedido.EM_PROCESSAMENTO;
