@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PedidoEntity } from './pedido.entity';
 import { In, Repository } from 'typeorm';
@@ -45,13 +50,17 @@ export class PedidoService {
       id: In(produtosIds),
     });
 
-    pedido.itensPedido = dadosDoPedido.itensPedido.map((itemPedido) => {
-      const itemPedidoEntity = new ItemPedidoEntity();
+    this.trataDadosDoPedido(dadosDoPedido, produtosRelacionados);
 
-      itemPedidoEntity.produto = produtosRelacionados.find(
+    pedido.itensPedido = dadosDoPedido.itensPedido.map((itemPedido) => {
+      const produtoRelacionado = produtosRelacionados.find(
         (produto) => produto.id === itemPedido.produtoId,
       );
-      itemPedidoEntity.precoVenda = itemPedidoEntity.produto.valor;
+
+      const itemPedidoEntity = new ItemPedidoEntity();
+
+      itemPedidoEntity.produto = produtoRelacionado!;
+      itemPedidoEntity.precoVenda = itemPedidoEntity!.produto.valor;
 
       itemPedidoEntity.produto.quantidadeDisponivel -= itemPedido.quantidade;
 
@@ -80,8 +89,35 @@ export class PedidoService {
   async atualizaPedido(pedidoId: string, dadosDoPedido: AtualizaPedidoDto) {
     const pedido = await this.pedidoRepository.findOneBy({ id: pedidoId });
 
+    if (pedido === null) {
+      throw new NotFoundException('O pedido não foi encontrado');
+    }
+
     Object.assign(pedido, dadosDoPedido);
 
     return this.pedidoRepository.save(pedido);
+  }
+
+  private trataDadosDoPedido(
+    dadosDoPedido: CriaPedidoDto,
+    produtosRelacionados: ProdutoEntity[],
+  ) {
+    dadosDoPedido.itensPedido.forEach((itemPedido) => {
+      const produtoRelacionado = produtosRelacionados.find(
+        (produto) => produto.id === itemPedido.produtoId,
+      );
+
+      if (produtoRelacionado === undefined) {
+        throw new NotFoundException(
+          `O produto com id ${itemPedido.produtoId} não foi encontrado`,
+        );
+      }
+
+      if (itemPedido.quantidade > produtoRelacionado.quantidadeDisponivel) {
+        throw new BadRequestException(
+          `A quantidade solicitada (${itemPedido.quantidade}) é maior que a quantidade disponível (${produtoRelacionado.quantidadeDisponivel}) para o ${produtoRelacionado.nome}.`,
+        );
+      }
+    });
   }
 }
