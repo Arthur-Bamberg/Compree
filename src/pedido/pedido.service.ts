@@ -93,7 +93,7 @@ export class PedidoService {
       throw new NotFoundException('O pedido não foi encontrado');
     }
 
-    Object.assign(pedido, dadosDoPedido);
+    Object.assign(pedido, dadosDoPedido as PedidoEntity);
 
     return this.pedidoRepository.save(pedido);
   }
@@ -118,6 +118,19 @@ export class PedidoService {
           `A quantidade solicitada (${itemPedido.quantidade}) é maior que a quantidade disponível (${produtoRelacionado.quantidadeDisponivel}) para o ${produtoRelacionado.nome}.`,
         );
       }
+    });
+  }
+
+  async obtemPedidosDeUsuario(usuarioId: string) {
+    await this.buscaUsuario(usuarioId);
+
+    return this.pedidoRepository.find({
+      where: {
+        usuario: { id: usuarioId },
+      },
+      relations: {
+        usuario: true,
+      },
     });
   }
 }
