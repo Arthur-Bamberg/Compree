@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -86,11 +87,24 @@ export class PedidoService {
     return pedidos;
   }
 
-  async atualizaPedido(pedidoId: string, dadosDoPedido: AtualizaPedidoDto) {
-    const pedido = await this.pedidoRepository.findOneBy({ id: pedidoId });
+  async atualizaPedido(
+    pedidoId: string,
+    dadosDoPedido: AtualizaPedidoDto,
+    usuarioId: string,
+  ) {
+    const pedido = await this.pedidoRepository.findOne({
+      where: { id: pedidoId },
+      relations: { usuario: true },
+    });
 
     if (pedido === null) {
       throw new NotFoundException('O pedido não foi encontrado');
+    }
+
+    if (pedido.usuario.id !== usuarioId) {
+      throw new ForbiddenException(
+        'Você não tem autorização para atualizar esse pedido',
+      );
     }
 
     Object.assign(pedido, dadosDoPedido as PedidoEntity);
