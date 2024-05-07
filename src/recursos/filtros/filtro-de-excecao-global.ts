@@ -25,6 +25,13 @@ export class FiltroDeExcecaoGlobal implements ExceptionFilter {
     const resposta = contexto.getResponse<Response>();
     const requisicao = contexto.getRequest<Request>();
 
+    if ('usuario' in requisicao) {
+      const requisicaoUsuario = requisicao as { usuario: { sub: string } };
+      this.loggerNativo.log(
+        `Rota acessada pelo usuário ${requisicaoUsuario.usuario.sub}`,
+      );
+    }
+
     const { status, body } =
       excecao instanceof HttpException
         ? { status: excecao.getStatus(), body: excecao.getResponse() }
