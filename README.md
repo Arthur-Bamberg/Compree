@@ -77,20 +77,26 @@ SAL_SENHA=$2b$10$4XsseV1M5TwLYGk5x3aB0e
 SEGREDO_JWT=yUKe1KMUwhsRKdb1f2Ljmt3tzPAuAAqeFHAY554PKlNA5BfQjYc0qblLZ3W3zdW3
 ```
 
-4. Mude para a versão do NodeJS em que essa versão do TypeORM funciona.
+4. Coloque os containers Docker para rodar.
+
+```bash
+docker-compose up -d
+```
+
+5. Mude para a versão do NodeJS em que essa versão do TypeORM funciona.
 
 ```bash
 nvm install 17
 nvm use 17
 ```
 
-5. Rode as migrações do banco de dados.
+6. Rode as migrações do banco de dados.
 
 ```bash
 npm run migrations
 ```
 
-6. Inicie a aplicação.
+7. Inicie a aplicação.
 
 ```bash
 npm run start
