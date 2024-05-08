@@ -26,7 +26,6 @@ export class CustomLogger extends ConsoleLogger {
 
     const caminhoDoLog = './src/modulos/customLogger/arquivo.log';
 
-    // if (!existsSync(caminhoDoLog)) writeFileSync(caminhoDoLog, '');
     appendFileSync(caminhoDoLog, mensagemFormatada);
   }
 }
